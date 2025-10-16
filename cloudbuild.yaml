@@ -1,0 +1,43 @@
+options:
+  default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET
+
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args: ['secrets', 'latest', '--secret=static-content', '--output-file=content.zip']
+  - name: 'gcr.io/cloud-builders/unzip'
+    args: ['content.zip', '-d', './src/content']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'test:ci']
+
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['run', 'build']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t',
+      'asia.gcr.io/reviewdale/rd-artfct-img-app-web-${_ENV}:$COMMIT_SHA',
+      '--build-arg=ENV=$_ENV',
+      '--build-arg=UPDATE_APP_CONFIG=$_UPDATE_APP_CONFIG',
+      '.'
+    ]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia.gcr.io/reviewdale/rd-artfct-img-app-web-${_ENV}:$COMMIT_SHA']
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud compute instance-groups managed rolling-action start-update $_RD_INSTANCE_GROUP_NAME \
+          --version=template=gce-template-${_ENV} \
+          --max-unavailable=0 \
+          --zone=$_ZONE
+
+images:
+  - 'asia.gcr.io/reviewdale/rd-artfct-img-app-web-${_ENV}:$COMMIT_SHA'
