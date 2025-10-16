@@ -1,1 +1,48 @@
 @import "tailwindcss";
+
+
+@theme {
+  --color-primary: oklch(0.65 0.15 240);
+  --color-background-light: oklch(0.97 0.01 240);
+  --color-background-dark: oklch(0.20 0.02 240);
+  --color-foreground-light: oklch(0.15 0.02 240);
+  --color-foreground-dark: oklch(0.97 0.01 240);
+  --color-subtle-light: oklch(0.55 0.05 200);
+  --color-subtle-dark: oklch(0.70 0.03 200);
+  --color-border-light: oklch(0.90 0.01 240);
+  --color-border-dark: oklch(0.30 0.02 240);
+  --font-family-display: "Manrope", sans-serif;
+  --font-size-2xs: 0.625rem;
+  --border-radius: 0.25rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 0.75rem;
+  --border-radius-full: 9999px;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .reviewdale-icon {
+    @apply inline-block size-4 text-primary;
+  }
+}
+
+.text-2xs {
+  font-size: 0.625rem !important; 
+  line-height: 1.2;
+  white-space: nowrap;
+}
